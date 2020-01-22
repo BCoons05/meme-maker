@@ -12,7 +12,7 @@ function Meme(props){
             {favorite ? <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5U0VamZ96OvEJ9RTPdt6gjILvuXSv714gCapv2mOZoFryntEdaw&s" alt="star" /> : null}
             <div className="btn-wrapper">
                 <button onClick={() => props.deleteMeme(id)}>Delete</button>
-                <button>Edit</button>
+                <button onClick={() => props.editMeme(id)}>Edit</button>
             </div>
         </div>
     )

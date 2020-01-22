@@ -13,6 +13,20 @@ function MemeForm (props) {
     const [ image, setImage ] = useState("")
     const imageRef = useRef(null)
 
+    useEffect(() => {
+        if(props.id && props.editMode){
+            fetch(`https://rec-meme-api.herokuapp.com/meme/${props.id}`)
+                .then(res => res.json())
+                .then(data => {
+                    setText(data.text)
+                    setFavorite(data.favorite)
+                })
+                .catch(err => {
+                    console.log("get by id error: ", err)
+                })
+        }
+    }, [])
+
     const componentConfig = () => {
         return{
             iconFiletypes: [".jpg", ".png"],
@@ -52,7 +66,21 @@ function MemeForm (props) {
         e.preventDefault()
 
         if(props.editMode){
-            console.log("Edit mode enabled")
+            fetch(`https://rec-meme-api.herokuapp.com/meme/${props.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json"
+                },
+                body: JSON.stringify({
+                    text,
+                    favorite
+                })
+            })
+            .then(imageRef.current.dropzone.removeAllFiles())
+            .catch(err => {
+                console.log("put error: ", err)
+            })
         } else {
             axios
                 .post("https://rec-meme-api.herokuapp.com/add-meme", {
@@ -66,9 +94,9 @@ function MemeForm (props) {
                     setFavorite(false)
                     imageRef.current.dropzone.removeAllFiles()
                 })
-                .then(() => {
-                    console.log("Added")
-                })
+                .then(
+                    navigate("/")
+                )
                 .catch(err => {
                     console.log("New meme submit error: ", err)
                 })
